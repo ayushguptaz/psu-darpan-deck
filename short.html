@@ -183,6 +183,45 @@
       background: var(--amber);
     }
 
+    /* ── Confidential watermark ───────────────────── */
+    .slide::after {
+      content: 'CONFIDENTIAL';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      font-weight: 900;
+      letter-spacing: 0.3em;
+      color: rgba(245, 158, 11, 0.045);
+      transform: rotate(-30deg);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    [data-theme="light"] .slide::after {
+      color: rgba(120, 80, 0, 0.055);
+    }
+
+    /* ── Confidential badge ───────────────────────── */
+    .confidential-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--red-bg);
+      color: var(--red-text);
+      text-transform: uppercase;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
     /* ── Slide header ─────────────────────────────── */
     .slide-header {
       display: flex;
@@ -593,6 +632,15 @@
       color: var(--ghost);
     }
 
+    /* ── Table scroll wrapper ─────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 8px;
+    }
+
+    .table-wrap .vs-table { margin-top: 0; }
+
     /* ── Responsive ───────────────────────────────── */
     @media (max-width: 600px) {
       .slide { padding: 1.25rem 1.25rem 1.75rem; }
@@ -610,6 +658,11 @@
       }
       .pipe-arrow { transform: rotate(90deg); }
     }
+
+    @media (max-width: 420px) {
+      .feature-grid { grid-template-columns: 1fr; }
+      .deck { padding-inline: 0.75rem; }
+    }
   </style>
 </head>
 <body>
@@ -624,6 +677,7 @@
         <button class="dot" role="tab" aria-label="Slide 4" data-index="3"></button>
         <button class="dot" role="tab" aria-label="Slide 5" data-index="4"></button>
       </div>
+      <span class="confidential-badge" aria-label="Confidential document">🔒 Confidential · NDA</span>
       <button class="theme-btn" id="theme-btn" aria-label="Toggle colour theme">☀ Light mode</button>
     </div>
 
@@ -828,20 +882,22 @@
         <div class="stat"><span class="stat-num" style="color:var(--green-text)">4.8m</span><div class="stat-label">Avg. session duration</div></div>
       </div>
 
-      <table class="vs-table">
-        <thead>
-          <tr>
-            <th>Platform</th>
-            <th>What they lack for PSU professionals</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>Existing PSU media sites</td><td>Outdated UI &amp; tech, no AI, no personalization, not mobile-first</td></tr>
-          <tr><td>ET / Moneycontrol / LinkedIn</td><td>PSU content is incidental — designed for a general audience</td></tr>
-          <tr><td>WhatsApp / PIB</td><td>Unverified or unreadable — no personalization, no trust layer</td></tr>
-          <tr class="ours"><td>PSU Darpan ✦</td><td>Modern · Personalized · AI-powered · Verified · Multi-format · Built only for PSU professionals</td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table class="vs-table">
+          <thead>
+            <tr>
+              <th>Platform</th>
+              <th>What they lack for PSU professionals</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Existing PSU media sites</td><td>Outdated UI &amp; tech, no AI, no personalization, not mobile-first</td></tr>
+            <tr><td>ET / Moneycontrol / LinkedIn</td><td>PSU content is incidental — designed for a general audience</td></tr>
+            <tr><td>WhatsApp / PIB</td><td>Unverified or unreadable — no personalization, no trust layer</td></tr>
+            <tr class="ours"><td>PSU Darpan ✦</td><td>Modern · Personalized · AI-powered · Verified · Multi-format · Built only for PSU professionals</td></tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="quote" style="margin-top:0.8rem">
         <p>"We're not competing on coverage. We're replacing WhatsApp groups and outdated portals as the primary daily habit of PSU India."</p>

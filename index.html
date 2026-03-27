@@ -25,6 +25,8 @@
       --amber:        #f59e0b;
       --amber-bg:     #431407;
       --amber-text:   #fbbf24;
+      --red-bg:       #450a0a;
+      --red-text:     #f87171;
     }
 
     [data-theme="light"] {
@@ -39,6 +41,8 @@
       --amber:        #d97706;
       --amber-bg:     #fef3c7;
       --amber-text:   #92400e;
+      --red-bg:       #fee2e2;
+      --red-text:     #b91c1c;
     }
 
     /* ── Reset ─────────────────────────────────────── */
@@ -165,12 +169,36 @@
       line-height: 1.6;
     }
 
+    /* ── Confidential badge ───────────────────────── */
+    .confidential-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--red-bg);
+      color: var(--red-text);
+      text-transform: uppercase;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
     /* ── Footer ───────────────────────────────────── */
     .site-footer {
       margin-top: 2.5rem;
       font-size: 0.72rem;
       color: var(--faint);
       text-align: center;
+    }
+
+    /* ── Responsive ───────────────────────────────── */
+    @media (max-width: 420px) {
+      body { padding: 1.5rem 1rem; }
+      .deck-card { padding: 1.1rem; }
+      .deck-card-title { font-size: 1rem; }
     }
   </style>
 </head>
@@ -180,6 +208,7 @@
       <div class="logo" aria-label="PSU Darpan">
         PSU <span class="logo-accent">Darpan</span>
       </div>
+      <span class="confidential-badge" aria-label="Confidential document">🔒 NDA</span>
       <button class="theme-btn" id="theme-btn" aria-label="Toggle colour theme">
         ☀ Light
       </button>

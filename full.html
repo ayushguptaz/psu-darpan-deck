@@ -203,6 +203,45 @@
       background: var(--amber);
     }
 
+    /* ── Confidential watermark ───────────────────── */
+    .slide::after {
+      content: 'CONFIDENTIAL';
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      font-weight: 900;
+      letter-spacing: 0.3em;
+      color: rgba(245, 158, 11, 0.045);
+      transform: rotate(-30deg);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    [data-theme="light"] .slide::after {
+      color: rgba(120, 80, 0, 0.055);
+    }
+
+    /* ── Confidential badge ───────────────────────── */
+    .confidential-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.63rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      background: var(--red-bg);
+      color: var(--red-text);
+      text-transform: uppercase;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
     /* ── Slide header ─────────────────────────────── */
     .slide-header {
       display: flex;
@@ -658,6 +697,15 @@
       line-height: 1.55;
     }
 
+    /* ── Table scroll wrapper ─────────────────────── */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 8px;
+    }
+
+    .table-wrap .vs-table { margin-top: 0; }
+
     /* ── Responsive ───────────────────────────────── */
     @media (max-width: 700px) {
       .slide { padding: 1.5rem 1.25rem 2rem; }
@@ -666,6 +714,7 @@
       .grid3 { grid-template-columns: 1fr 1fr; }
       .feature-grid { grid-template-columns: repeat(2, 1fr); }
       .hero-bottom { gap: 1.5rem; }
+      .big-num { font-size: 2rem; }
       .pipeline {
         grid-template-columns: 1fr;
         gap: 0.5rem;
@@ -679,6 +728,17 @@
       .col-labels span:last-child { display: none; }
       .nav-jumps { display: none; }
     }
+
+    @media (max-width: 500px) {
+      .grid3 { grid-template-columns: 1fr; }
+      .hero-bottom { gap: 0.75rem; }
+      .big-num { font-size: 1.75rem; }
+      .deck { padding-inline: 0.75rem; }
+    }
+
+    @media (max-width: 420px) {
+      .feature-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -689,6 +749,7 @@
   <nav class="sticky-nav" aria-label="Slide navigation">
     <div class="nav-top">
       <a class="nav-logo" href="/" aria-label="Back to home">PSU <span>Darpan</span></a>
+      <span class="confidential-badge" aria-label="Confidential document">🔒 Confidential · NDA</span>
       <button class="theme-btn" id="theme-btn" aria-label="Toggle colour theme">☀ Light mode</button>
     </div>
     <div class="nav-jumps">
@@ -1107,23 +1168,25 @@
       Every existing option was designed for a different primary audience.
     </p>
 
-    <table class="vs-table">
-      <thead>
-        <tr>
-          <th>Platform</th>
-          <th>Primary audience</th>
-          <th>PSU professional's experience</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>Existing PSU media sites</td><td>General PSU readership</td><td>Outdated UI, no personalization, no AI, no mobile-first design</td></tr>
-        <tr><td>Economic Times / Moneycontrol</td><td>Business &amp; finance readers</td><td>PSU news incidental — buried under Sensex, politics, IPOs</td></tr>
-        <tr><td>LinkedIn</td><td>Pan-professional network</td><td>PSU content algorithm-dependent; no structured categories</td></tr>
-        <tr><td>PIB / Press Releases</td><td>Journalists &amp; government</td><td>Dense, unreadable, zero personalization or search</td></tr>
-        <tr><td>WhatsApp Groups</td><td>Peer networks</td><td>Unverified, distorted, unsearchable, no archive</td></tr>
-        <tr class="ours"><td>PSU Darpan ✦</td><td>PSU professionals (only)</td><td>Personalized · AI-powered · Verified · Multi-format · Native app</td></tr>
-      </tbody>
-    </table>
+    <div class="table-wrap">
+      <table class="vs-table">
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Primary audience</th>
+            <th>PSU professional's experience</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Existing PSU media sites</td><td>General PSU readership</td><td>Outdated UI, no personalization, no AI, no mobile-first design</td></tr>
+          <tr><td>Economic Times / Moneycontrol</td><td>Business &amp; finance readers</td><td>PSU news incidental — buried under Sensex, politics, IPOs</td></tr>
+          <tr><td>LinkedIn</td><td>Pan-professional network</td><td>PSU content algorithm-dependent; no structured categories</td></tr>
+          <tr><td>PIB / Press Releases</td><td>Journalists &amp; government</td><td>Dense, unreadable, zero personalization or search</td></tr>
+          <tr><td>WhatsApp Groups</td><td>Peer networks</td><td>Unverified, distorted, unsearchable, no archive</td></tr>
+          <tr class="ours"><td>PSU Darpan ✦</td><td>PSU professionals (only)</td><td>Personalized · AI-powered · Verified · Multi-format · Native app</td></tr>
+        </tbody>
+      </table>
+    </div>
 
     <div class="grid2" style="margin-top:1.2rem">
       <div class="card">
