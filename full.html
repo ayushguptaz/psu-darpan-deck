@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:sans-serif;background:#0a0f1e;color:#f0f4ff;min-height:100vh}
+.deck{max-width:900px;margin:0 auto;padding:2rem 1rem}
+.slide{background:#111827;border:0.5px solid #1e3a5f;border-radius:16px;padding:2.5rem 3rem 3rem;margin-bottom:2rem;position:relative;overflow:hidden}
+.slide::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:#f59e0b}
+.slide-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.8rem}
+.slide-num{font-size:11px;color:#475569;letter-spacing:2px;font-weight:500}
+.logo-mark{font-size:0.95rem;font-weight:800;letter-spacing:-0.5px;color:#f8fafc}
+.logo-mark span{color:#f59e0b}
+.tag{display:inline-block;font-size:11px;font-weight:500;padding:4px 10px;border-radius:20px;letter-spacing:1px;margin-bottom:1rem}
+.tag-blue{background:#0c2d54;color:#60a5fa}
+.tag-amber{background:#431407;color:#fbbf24}
+.tag-red{background:#450a0a;color:#f87171}
+.tag-green{background:#052e16;color:#4ade80}
+h2.slide-title{font-size:1.55rem;font-weight:600;color:#e2e8f0;margin-bottom:1.2rem;line-height:1.25}
+p.sub{font-size:0.95rem;color:#94a3b8;line-height:1.75;margin-bottom:1rem}
+.divider{width:48px;height:3px;background:#f59e0b;margin:1rem 0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1rem}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-top:1rem}
+.card{background:#1e293b;border:0.5px solid #334155;border-radius:12px;padding:1.2rem}
+.card h4{font-size:0.88rem;font-weight:600;color:#e2e8f0;margin-bottom:0.3rem}
+.card p{font-size:0.8rem;color:#94a3b8;line-height:1.55}
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin:1.5rem 0}
+.stat{background:#0f172a;border:0.5px solid #1e3a5f;border-radius:12px;padding:1.2rem;text-align:center}
+.stat-num{font-size:1.9rem;font-weight:700;color:#f59e0b;display:block}
+.stat-label{font-size:0.72rem;color:#64748b;margin-top:4px;line-height:1.3}
+.stat-src{font-size:0.6rem;color:#1e3a5f;margin-top:3px}
+ul.bullets{list-style:none;padding:0;margin-top:0.5rem}
+ul.bullets li{padding:0.5rem 0;border-bottom:0.5px solid #1e293b;font-size:0.88rem;color:#cbd5e1;display:flex;gap:0.75rem;align-items:flex-start;line-height:1.5}
+ul.bullets li::before{content:'→';color:#f59e0b;flex-shrink:0;margin-top:1px}
+.vs-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:0.83rem}
+.vs-table th{text-align:left;padding:10px 12px;background:#0f172a;color:#94a3b8;font-weight:500;border-bottom:0.5px solid #334155}
+.vs-table td{padding:10px 12px;border-bottom:0.5px solid #1e293b;color:#cbd5e1;vertical-align:top}
+.vs-table tr.ours td{background:#0c2d54;color:#93c5fd;font-weight:600}
+.vs-table tr.ours td:first-child{border-left:3px solid #f59e0b}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:0.72rem;font-weight:500;margin:2px}
+.pill-red{background:#450a0a;color:#f87171}
+.pill-green{background:#052e16;color:#4ade80}
+.pill-amber{background:#431407;color:#fbbf24}
+.pill-blue{background:#0c2d54;color:#60a5fa}
+.pipeline{display:grid;grid-template-columns:1fr 36px 1fr 36px 1fr;align-items:center;margin-top:1.5rem}
+.pipe-step{background:#1e293b;border:0.5px solid #334155;border-radius:12px;padding:1rem;text-align:center}
+.pipe-step h4{font-size:0.83rem;font-weight:600;color:#e2e8f0;margin-bottom:0.3rem}
+.pipe-step p{font-size:0.73rem;color:#94a3b8;line-height:1.45}
+.pipe-arrow{text-align:center;color:#f59e0b;font-size:1.2rem}
+.nav{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.nav-btn{background:#1e293b;border:0.5px solid #334155;color:#94a3b8;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:0.8rem;font-family:sans-serif}
+.nav-btn:hover{border-color:#f59e0b;color:#f59e0b}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;margin-top:1rem}
+.feat{background:#0f172a;border:0.5px solid #1e3a5f;border-radius:10px;padding:0.9rem}
+.feat h5{font-size:0.78rem;font-weight:600;color:#93c5fd;margin-bottom:0.25rem}
+.feat p{font-size:0.7rem;color:#64748b;line-height:1.4}
+.quote{border-left:3px solid #f59e0b;padding:1rem 1.5rem;margin:1.2rem 0;background:#0f172a;border-radius:0 12px 12px 0}
+.quote p{font-size:1rem;font-style:italic;color:#e2e8f0;line-height:1.6}
+.info-box{background:#0c2d54;border:0.5px solid #1e3a5f;border-radius:12px;padding:1.2rem;margin-top:1rem}
+.info-box p{font-size:0.85rem;color:#93c5fd;line-height:1.65}
+.big-num{font-size:3.2rem;font-weight:800;color:#f59e0b;line-height:1}
+.big-label{font-size:0.82rem;color:#64748b;margin-top:4px}
+.big-src{font-size:0.62rem;color:#1e3a5f;margin-top:2px}
+.layer-row{display:grid;grid-template-columns:28px 1fr 1fr;gap:0.75rem;align-items:start;padding:0.75rem 0;border-bottom:0.5px solid #1e293b}
+.layer-num{width:28px;height:28px;border-radius:50%;background:#431407;color:#fbbf24;font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.layer-prob h5{font-size:0.83rem;font-weight:600;color:#f87171;margin-bottom:0.2rem}
+.layer-prob p{font-size:0.78rem;color:#94a3b8;line-height:1.45}
+.layer-sol h5{font-size:0.83rem;font-weight:600;color:#4ade80;margin-bottom:0.2rem}
+.layer-sol p{font-size:0.78rem;color:#94a3b8;line-height:1.45}
+.two-col-label{display:grid;grid-template-columns:28px 1fr 1fr;gap:0.75rem;margin-bottom:0.3rem}
+.two-col-label span{font-size:0.7rem;color:#475569;letter-spacing:1px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<div class="nav">
+<span style="font-size:0.8rem;color:#64748b;padding:6px 0;margin-right:4px">Jump to:</span>
+<button class="nav-btn" onclick="document.getElementById('s1').scrollIntoView({behavior:'smooth'})">Cover</button>
+<button class="nav-btn" onclick="document.getElementById('s2').scrollIntoView({behavior:'smooth'})">Why Problem Exists</button>
+<button class="nav-btn" onclick="document.getElementById('s3').scrollIntoView({behavior:'smooth'})">3 Problem Layers</button>
+<button class="nav-btn" onclick="document.getElementById('s4').scrollIntoView({behavior:'smooth'})">Solution</button>
+<button class="nav-btn" onclick="document.getElementById('s5').scrollIntoView({behavior:'smooth'})">Product</button>
+<button class="nav-btn" onclick="document.getElementById('s6').scrollIntoView({behavior:'smooth'})">Who We Serve</button>
+<button class="nav-btn" onclick="document.getElementById('s7').scrollIntoView({behavior:'smooth'})">Pipeline</button>
+<button class="nav-btn" onclick="document.getElementById('s8').scrollIntoView({behavior:'smooth'})">What's Built</button>
+<button class="nav-btn" onclick="document.getElementById('s9').scrollIntoView({behavior:'smooth'})">Competition</button>
+<button class="nav-btn" onclick="document.getElementById('s10').scrollIntoView({behavior:'smooth'})">Tech</button>
+</div>
+
+<!-- SLIDE 1: COVER -->
+<div class="slide" id="s1">
+<div class="slide-header">
+<div class="slide-num">01 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-amber">INDIA'S PSU INTELLIGENCE PLATFORM</div>
+<div style="font-size:2.8rem;font-weight:800;color:#f8fafc;letter-spacing:-1px;line-height:1.1">PSU <span style="color:#f59e0b">Darpan</span></div>
+<div style="font-size:1.1rem;color:#f59e0b;font-weight:500;margin:0.75rem 0">India's first dedicated intelligence app for public sector professionals</div>
+<div class="divider"></div>
+<p class="sub" style="font-size:1rem;max-width:540px">India has ~390 PSUs and lakhs of public sector employees. The information they need most — about their own organizations — reaches them last, distorted, or not at all. PSU Darpan is built to fix that.</p>
+<div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin:1rem 0">
+<span class="pill pill-blue">Native mobile app</span>
+<span class="pill pill-amber">AI-powered pipeline</span>
+<span class="pill pill-green">Live product</span>
+<span class="pill pill-blue">Free for users</span>
+</div>
+<div style="margin-top:2rem;padding-top:1.5rem;border-top:0.5px solid #1e293b;display:flex;gap:2.5rem">
+<div><div class="big-num">~390</div><div class="big-label">PSUs in India</div><div class="big-src">DPE, 2024</div></div>
+<div><div class="big-num">13</div><div class="big-label">Content categories</div></div>
+<div><div class="big-num">Live</div><div class="big-label">Product, today</div></div>
+</div>
+</div>
+
+<!-- SLIDE 2: ROOT CAUSE — WHY THE PROBLEM EXISTS -->
+<div class="slide" id="s2">
+<div class="slide-header">
+<div class="slide-num">02 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-red">WHY THE PROBLEM EXISTS</div>
+<h2 class="slide-title">PSU News Was Never Designed for the PSU Employee</h2>
+<p class="sub">The core issue isn't that PSU news doesn't exist. It's that the <strong style="color:#f0f4ff">entire information chain was built for government audiences</strong> — not for the professional whose career it directly affects.</p>
+<div class="grid2" style="margin-top:1.2rem">
+<div class="card" style="border-color:#450a0a">
+<h4 style="color:#f87171;margin-bottom:0.6rem">How PSU news is produced</h4>
+<ul class="bullets" style="margin-top:0">
+<li>Press releases written in bureaucratic language</li>
+<li>Ministry circulars formatted as dense PDFs</li>
+<li>PIB bulletins designed for journalists, not employees</li>
+<li>No translation layer for the professional consumer</li>
+</ul>
+</div>
+<div class="card" style="border-color:#450a0a">
+<h4 style="color:#f87171;margin-bottom:0.6rem">How PSU news travels</h4>
+<ul class="bullets" style="margin-top:0">
+<li>Journalist picks it up → publishes for general audience</li>
+<li>Someone screenshots → shares to WhatsApp group</li>
+<li>Forward gets distorted 3–4 times along the way</li>
+<li>Employee gets it last — often wrong, always late</li>
+</ul>
+</div>
+</div>
+<div class="info-box" style="background:#1a0f00;border-color:#431407;margin-top:1.2rem">
+<p style="color:#fbbf24;text-align:center;font-size:0.95rem">The structural gap: there is <strong>no channel that goes directly from PSU event → relevant employee</strong>, in readable language, before WhatsApp distortion sets in.</p>
+</div>
+<div class="quote">
+<p>"Employees at SAIL's Bhilai plant often learn about DPC results from a WhatsApp forward — not from their own organization's communication."</p>
+</div>
+</div>
+
+<!-- SLIDE 3: 3 PROBLEM LAYERS + OUR ANSWER -->
+<div class="slide" id="s3">
+<div class="slide-header">
+<div class="slide-num">03 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-red">THE THREE PROBLEM LAYERS</div>
+<h2 class="slide-title">Three Structural Failures. One Product That Fixes All Three.</h2>
+<div style="margin-top:1rem">
+<div class="two-col-label">
+<span></span>
+<span style="padding-left:0">PROBLEM</span>
+<span>PSU DARPAN'S ANSWER</span>
+</div>
+<div class="layer-row">
+<div class="layer-num">1</div>
+<div class="layer-prob">
+<h5>Production — Unreadable content</h5>
+<p>PSU news originates as press releases & PDFs in bureaucratic language. No one translates it for the professional reader.</p>
+</div>
+<div class="layer-sol">
+<h5>AI rewrites at source</h5>
+<p>LLM auto-summarizes every article into plain language, assigns category, and maps it to the right PSU & sector — before it ever reaches the feed.</p>
+</div>
+</div>
+<div class="layer-row">
+<div class="layer-num">2</div>
+<div class="layer-prob">
+<h5>Distribution — Wrong channel, wrong order</h5>
+<p>News reaches journalists and investors first. Employees get a distorted WhatsApp forward last — often too late to act on.</p>
+</div>
+<div class="layer-sol">
+<h5>Direct push to the employee</h5>
+<p>Native app with push notifications delivers verified news directly to the PSU professional — before the WhatsApp chain even starts.</p>
+</div>
+</div>
+<div class="layer-row" style="border-bottom:none">
+<div class="layer-num">3</div>
+<div class="layer-prob">
+<h5>Personalization — One-size-fits-all</h5>
+<p>An ONGC engineer and a BHEL officer have near-zero news overlap. Every existing platform treats them identically.</p>
+</div>
+<div class="layer-sol">
+<h5>PSU-native feed from day one</h5>
+<p>User selects their PSU. Feed is immediately personalized by organization, sector, and 13 structured categories. No algorithm warm-up needed.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SLIDE 4: SOLUTION + TRUST ANGLE -->
+<div class="slide" id="s4">
+<div class="slide-header">
+<div class="slide-num">04 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-blue">THE SOLUTION</div>
+<h2 class="slide-title">Not Just Better UI. A New Trust Infrastructure for PSU India.</h2>
+<p class="sub">Existing PSU media is present but built for a different era — no personalization, no AI, no multi-format consumption, and no verified community layer. PSU Darpan is the modern rebuild of that stack.</p>
+<div class="info-box" style="margin-top:0.5rem">
+<p style="text-align:center;font-size:1rem;color:#93c5fd;font-weight:500">
+<strong>Inshorts</strong> × <strong>LinkedIn</strong> × <strong>Moneycontrol</strong><br>
+<span style="font-size:0.88rem;color:#60a5fa">— exclusively for India's public sector, as a native mobile app</span>
+</p>
+</div>
+<div class="grid3" style="margin-top:1.2rem">
+<div class="card">
+<div style="font-size:1.2rem;margin-bottom:0.4rem">📰</div>
+<h4>Readable news</h4>
+<p>AI converts bureaucratic source content into clean, scannable summaries across 13 structured categories.</p>
+</div>
+<div class="card">
+<div style="font-size:1.2rem;margin-bottom:0.4rem">🎯</div>
+<h4>Personalized from day one</h4>
+<p>PSU + sector + category selection means the feed is relevant the first time a user opens the app — no algorithm warming.</p>
+</div>
+<div class="card">
+<div style="font-size:1.2rem;margin-bottom:0.4rem">✅</div>
+<h4>Verified trust layer</h4>
+<p>OTP-gated employee directory and editorial review pipeline create a citable, verified source — not a WhatsApp rumour.</p>
+</div>
+</div>
+<div class="quote" style="margin-top:1.2rem">
+<p>"Lakhs of employees make career decisions — deputation applications, transfer requests — based on unverified forwards. PSU Darpan is the verified source they should have always had."</p>
+</div>
+</div>
+
+<!-- SLIDE 5: PRODUCT FEATURES -->
+<div class="slide" id="s5">
+<div class="slide-header">
+<div class="slide-num">05 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-blue">THE PRODUCT</div>
+<h2 class="slide-title">Every Format. Every Update. One App.</h2>
+<div class="feature-grid">
+<div class="feat"><h5>Personalized Feed</h5><p>Ranked by PSU, sector & topics. Infinite scroll, pull-to-refresh.</p></div>
+<div class="feat"><h5>Shorts</h5><p>Vertical reel-style cards. Swipe, like, share — without leaving the feed.</p></div>
+<div class="feat"><h5>Stories</h5><p>Instagram-style bubbles. Cube transition. Auto-progress. Time-gated.</p></div>
+<div class="feat"><h5>Breaking Ticker</h5><p>Live editor-curated scrolling marquee for urgent news.</p></div>
+<div class="feat"><h5>Jobs Page</h5><p>All PSU recruitment, vacancy & HR pay revision in one filtered view.</p></div>
+<div class="feat"><h5>PSU Browser</h5><p>~390 PSU profiles with sector, ministry & all related articles.</p></div>
+<div class="feat"><h5>Employee Directory</h5><p>OTP-gated verified network. Search by name, plant, designation.</p></div>
+<div class="feat"><h5>Search</h5><p>Real-time across articles, PSUs, and sectors.</p></div>
+<div class="feat"><h5>AI Helper</h5><p>Natural language PSU queries. ("NTPC's Q3 profit?") — coming soon.</p></div>
+</div>
+<div style="margin-top:1.2rem">
+<h4 style="font-size:0.78rem;color:#64748b;letter-spacing:1px;margin-bottom:0.6rem">13 CONTENT CATEGORIES</h4>
+<div style="display:flex;flex-wrap:wrap;gap:5px">
+<span class="pill pill-blue">Appointments</span><span class="pill pill-blue">Promotions</span><span class="pill pill-amber">Jobs</span><span class="pill pill-blue">Policy</span><span class="pill pill-amber">Tenders</span><span class="pill pill-blue">Projects</span><span class="pill pill-green">CSR</span><span class="pill pill-green">Awards</span><span class="pill pill-amber">Finance</span><span class="pill pill-blue">HR & Pay Revision</span><span class="pill pill-blue">General</span><span class="pill pill-red">Breaking</span><span class="pill pill-blue">Analysis</span>
+</div>
+</div>
+</div>
+
+<!-- SLIDE 6: WHO WE SERVE — FULL AUDIENCE -->
+<div class="slide" id="s6">
+<div class="slide-header">
+<div class="slide-num">06 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-amber">WHO WE SERVE</div>
+<h2 class="slide-title">One Universe. Four Distinct Audiences.</h2>
+<div class="stat-row">
+<div class="stat"><span class="stat-num">~390</span><div class="stat-label">PSUs in India (central + state)</div><div class="stat-src">DPE, 2024</div></div>
+<div class="stat"><span class="stat-num">11L+</span><div class="stat-label">Permanent CPSE employees</div><div class="stat-src">PIB / Public Enterprises Survey</div></div>
+<div class="stat"><span class="stat-num">18%</span><div class="stat-label">India's GDP from public sector</div></div>
+<div class="stat"><span class="stat-num">Lakhs</span><div class="stat-label">GATE aspirants targeting PSU jobs annually</div></div>
+</div>
+<div class="grid2">
+<div>
+<div class="card" style="margin-bottom:0.75rem">
+<h4 style="color:#f59e0b">PSU Employees</h4>
+<p>Officers, engineers, managers in CPSEs and state PSUs. Need appointments, policy, pay revision, tenders — fast and verified.</p>
+</div>
+<div class="card">
+<h4 style="color:#60a5fa">PSU Aspirants</h4>
+<p>Lakhs of GATE-qualified graduates targeting PSU recruitment every year. Obsessively track vacancy notifications, cut-offs, and DPC results. Currently underserved by every platform.</p>
+</div>
+</div>
+<div>
+<div class="card" style="margin-bottom:0.75rem">
+<h4 style="color:#4ade80">PSU Investors & Analysts</h4>
+<p>Retail investors in listed PSUs (ONGC, NTPC, SAIL, Coal India, HAL, BEL) who need financial news, project wins, and leadership changes faster than ET or Moneycontrol surfaces them.</p>
+</div>
+<div class="card">
+<h4 style="color:#a78bfa">Extended Ecosystem</h4>
+<p>Retirees, PSU families, government vendors & contractors, policy researchers, ministry stakeholders — all orbiting the same PSU universe and underserved by general news platforms.</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- SLIDE 7: CONTENT PIPELINE -->
+<div class="slide" id="s7">
+<div class="slide-header">
+<div class="slide-num">07 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-blue">HOW WE BUILD CONTENT</div>
+<h2 class="slide-title">AI Speed. Human Accuracy. Three-Stream Pipeline.</h2>
+<p class="sub">Fresh, categorized, structured PSU content — at scale, around the clock. Every article is readable, categorized, and mapped to the right PSU before it reaches a single user.</p>
+<div class="pipeline">
+<div class="pipe-step">
+<div style="font-size:1.4rem;margin-bottom:0.4rem">🤖</div>
+<h4>AI Scraper</h4>
+<p>RSS from PIB, PSU press sites, financial news — LLM auto-summarizes, classifies category, maps to PSU & sector</p>
+</div>
+<div class="pipe-arrow">→</div>
+<div class="pipe-step">
+<div style="font-size:1.4rem;margin-bottom:0.4rem">✍️</div>
+<h4>Writer Network</h4>
+<p>Registered writers submit original articles. Editorial review queue. Admin approval before any article goes live.</p>
+</div>
+<div class="pipe-arrow">→</div>
+<div class="pipe-step">
+<div style="font-size:1.4rem;margin-bottom:0.4rem">⚡</div>
+<h4>Admin Direct</h4>
+<p>Breaking news published instantly by editors without queue. Real-time urgency when it matters most.</p>
+</div>
+</div>
+<div class="grid3" style="margin-top:1.5rem">
+<div class="card">
+<h4 style="color:#4ade80;margin-bottom:0.3rem">Scale without noise</h4>
+<p>AI handles bulk ingestion — but every AI-scraped article still goes through human review before publishing. No hallucination risk.</p>
+</div>
+<div class="card">
+<h4 style="color:#60a5fa;margin-bottom:0.3rem">Always categorized</h4>
+<p>Every article lands in one of 13 categories — so an Appointments story never reaches someone who only follows Finance.</p>
+</div>
+<div class="card">
+<h4 style="color:#f59e0b;margin-bottom:0.3rem">Always fresh</h4>
+<p>Breaking news live in minutes. Scraped content same day. No PSU story sits unread in an RSS feed overnight.</p>
+</div>
+</div>
+</div>
+
+<!-- SLIDE 8: WHAT HAS BEEN BUILT -->
+<div class="slide" id="s8">
+<div class="slide-header">
+<div class="slide-num">08 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-green">WHAT HAS BEEN BUILT</div>
+<h2 class="slide-title">Not a Concept. A Live, Working Product.</h2>
+<div class="stat-row">
+<div class="stat"><span class="stat-num" style="color:#4ade80">12,400</span><div class="stat-label">Registered users</div></div>
+<div class="stat"><span class="stat-num" style="color:#4ade80">3,200</span><div class="stat-label">Daily active users</div></div>
+<div class="stat"><span class="stat-num" style="color:#4ade80">850+</span><div class="stat-label">Articles published</div></div>
+<div class="stat"><span class="stat-num" style="color:#4ade80">4.8m</span><div class="stat-label">Avg. session duration</div></div>
+</div>
+<div class="grid2">
+<div>
+<h4 style="font-size:0.78rem;color:#64748b;letter-spacing:1px;margin-bottom:0.6rem">FULLY LIVE TODAY</h4>
+<ul class="bullets">
+<li>~390 PSU profiles populated & actively curated</li>
+<li>13 categories with daily editorial coverage</li>
+<li>Shorts & Stories fully functional</li>
+<li>Threaded comments, reactions & bookmarks live</li>
+<li>Employee OTP email verification operational</li>
+<li>Full dark mode across every screen & component</li>
+<li>Admin CMS — articles, tickers, stories, user roles</li>
+</ul>
+</div>
+<div>
+<h4 style="font-size:0.78rem;color:#64748b;letter-spacing:1px;margin-bottom:0.6rem">REAL ENGAGEMENT SIGNALS</h4>
+<ul class="bullets">
+<li>Top categories: Appointments, Jobs & Finance</li>
+<li>Most followed PSUs: ONGC, NTPC, SAIL, Coal India, HAL</li>
+<li>Shorts avg. 6 swipes per session</li>
+<li>40% of users return within 48 hours</li>
+<li>Comments most active on Appointments news</li>
+</ul>
+</div>
+</div>
+<div class="info-box" style="background:#052e16;border-color:#166534;margin-top:1rem">
+<p style="color:#4ade80;text-align:center;font-size:0.82rem">⚠️ Replace dummy metrics with your live product data before presenting.</p>
+</div>
+</div>
+
+<!-- SLIDE 9: COMPETITION -->
+<div class="slide" id="s9">
+<div class="slide-header">
+<div class="slide-num">09 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-red">COMPETITIVE LANDSCAPE</div>
+<h2 class="slide-title">Others Cover PSUs. None Are Built for Them.</h2>
+<p class="sub">The gap is not in coverage — it's in <strong style="color:#f0f4ff">experience, personalization, trust, and technology</strong>. Every existing option was designed for a different primary audience.</p>
+<table class="vs-table">
+<thead><tr><th>Platform</th><th>Primary audience</th><th>PSU professional's experience</th></tr></thead>
+<tbody>
+<tr><td>Existing PSU media sites</td><td>General PSU readership</td><td>Outdated UI, no personalization, no AI, no mobile-first design</td></tr>
+<tr><td>Economic Times / Moneycontrol</td><td>Business & finance readers</td><td>PSU news incidental — buried under Sensex, politics, IPOs</td></tr>
+<tr><td>LinkedIn</td><td>Pan-professional network</td><td>PSU content algorithm-dependent; no structured categories</td></tr>
+<tr><td>PIB / Press Releases</td><td>Journalists & government</td><td>Dense, unreadable, zero personalization or search</td></tr>
+<tr><td>WhatsApp Groups</td><td>Peer networks</td><td>Unverified, distorted, unsearchable, no archive</td></tr>
+<tr class="ours"><td>PSU Darpan ✦</td><td>PSU professionals (only)</td><td>Personalized · AI-powered · Verified · Multi-format · Native app</td></tr>
+</tbody>
+</table>
+<div class="grid2" style="margin-top:1.2rem">
+<div class="card"><h4 style="color:#f59e0b">Our position</h4><p>We're not competing with ET or existing PSU sites on coverage. We're replacing WhatsApp groups and outdated portals as the <em>primary daily habit</em> of PSU professionals.</p></div>
+<div class="card"><h4 style="color:#60a5fa">Compounding moat</h4><p>Structured taxonomy + verified employee directory + AI pipeline + multi-format UX = a product that gets harder to replicate the more it grows.</p></div>
+</div>
+</div>
+
+<!-- SLIDE 10: TECH -->
+<div class="slide" id="s10">
+<div class="slide-header">
+<div class="slide-num">10 / 10</div>
+<div class="logo-mark">PSU <span>Darpan</span></div>
+</div>
+<div class="tag tag-blue">HOW WE BUILD — TECHNOLOGY</div>
+<h2 class="slide-title">Built to Scale Across India's Entire Public Sector</h2>
+<div class="grid2">
+<div>
+<h4 style="font-size:0.78rem;color:#64748b;letter-spacing:1px;margin-bottom:0.6rem">TECH STACK</h4>
+<ul class="bullets">
+<li><strong style="color:#93c5fd">Frontend:</strong> Next.js 15 (App Router) + TypeScript</li>
+<li><strong style="color:#93c5fd">Styling:</strong> Tailwind CSS v4 with full dark mode</li>
+<li><strong style="color:#93c5fd">Auth:</strong> Firebase Phone OTP — zero friction onboarding</li>
+<li><strong style="color:#93c5fd">Backend:</strong> Node.js REST API</li>
+<li><strong style="color:#93c5fd">Database:</strong> PostgreSQL</li>
+<li><strong style="color:#93c5fd">AI:</strong> LLM — auto-classify, summarize, map to PSU/sector</li>
+<li><strong style="color:#93c5fd">Distribution:</strong> Native mobile app</li>
+</ul>
+</div>
+<div>
+<h4 style="font-size:0.78rem;color:#64748b;letter-spacing:1px;margin-bottom:0.6rem">DESIGNED TO SCALE</h4>
+<ul class="bullets">
+<li>PSU Browser ready for all ~390 PSUs + state expansion</li>
+<li>AI pipeline built for high-volume automated ingestion</li>
+<li>Role-based access: public · registered · writer · admin</li>
+<li>Modular backend — new sectors without full rebuild</li>
+<li>Full admin CMS: articles, stories, tickers, analytics</li>
+</ul>
+</div>
+</div>
+<div class="grid3" style="margin-top:1.2rem">
+<div class="card" style="text-align:center">
+<div style="font-size:1.6rem;margin-bottom:0.4rem">⚡</div>
+<h4>Performance</h4>
+<p>Next.js image optimization. Fast even on 4G mobile networks across India.</p>
+</div>
+<div class="card" style="text-align:center">
+<div style="font-size:1.6rem;margin-bottom:0.4rem">🔐</div>
+<h4>Trust & Verification</h4>
+<p>Firebase auth + OTP-gated employee directory + editorial human review. Verified at every layer.</p>
+</div>
+<div class="card" style="text-align:center">
+<div style="font-size:1.6rem;margin-bottom:0.4rem">🛠️</div>
+<h4>Editorial Control</h4>
+<p>Full CMS: create, approve, reject, manage articles, tickers, stories, and user roles.</p>
+</div>
+</div>
+</div>
+
+</div>
+</body>
+</html>
