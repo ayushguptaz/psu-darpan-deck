@@ -1,5 +1,8 @@
 {
   "name": "psu-darpan-deck",
   "version": "1.0.0",
-  "description": "PSU Darpan pitch deck — interactive HTML presentation"
+  "description": "PSU Darpan pitch deck — interactive HTML presentation",
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
 }
