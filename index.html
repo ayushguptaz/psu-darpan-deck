@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>/* apply saved theme before paint to avoid flash */
+    (function(){ const t=localStorage.getItem('psu-theme'); if(t) document.documentElement.dataset.theme=t; }());
+  </script>
   <style>
     /* ── Design tokens ─────────────────────────────── */
     :root {
@@ -235,17 +238,22 @@
       </a>
     </nav>
 
-    <footer class="site-footer">PSU Darpan &copy; 2024</footer>
+    <footer class="site-footer">PSU Darpan &copy; 2026</footer>
   </main>
 
   <script>
     const btn  = document.getElementById('theme-btn');
     const root = document.documentElement;
 
+    // Sync button label to whatever theme was restored from localStorage
+    btn.textContent = root.dataset.theme === 'dark' ? '☀ Light' : '☾ Dark';
+
     btn.addEventListener('click', () => {
       const isDark = root.dataset.theme === 'dark';
-      root.dataset.theme    = isDark ? 'light' : 'dark';
-      btn.textContent       = isDark ? '☾ Dark' : '☀ Light';
+      const next   = isDark ? 'light' : 'dark';
+      root.dataset.theme = next;
+      localStorage.setItem('psu-theme', next);
+      btn.textContent    = isDark ? '☾ Dark' : '☀ Light';
     });
   </script>
 </body>

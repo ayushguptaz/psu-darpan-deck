@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>/* apply saved theme before paint to avoid flash */
+    (function(){ const t=localStorage.getItem('psu-theme'); if(t) document.documentElement.dataset.theme=t; }());
+  </script>
   <style>
     /* ── Design tokens ─────────────────────────────── */
     :root {
@@ -162,6 +165,41 @@
       border-color: var(--amber);
       color: var(--amber);
       outline: none;
+    }
+
+    /* ── Nav right-side action group ─────────────── */
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Download buttons ─────────────────────────── */
+    .dl-btn {
+      background: var(--surface2);
+      border: 0.5px solid var(--border2);
+      color: var(--muted);
+      padding: 5px 10px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-family: var(--font);
+      white-space: nowrap;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .dl-btn:hover,
+    .dl-btn:focus-visible {
+      border-color: var(--amber);
+      color: var(--amber);
+      outline: none;
+    }
+
+    .dl-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      pointer-events: none;
     }
 
     /* ── Theme toggle ─────────────────────────────── */
@@ -629,6 +667,7 @@
     @media (max-width: 600px) {
       .slide { padding: 1.25rem 1.25rem 1.75rem; }
       .nav-jumps { display: none; }
+      .dl-btn { display: none; }
       .stat-row { grid-template-columns: repeat(2, 1fr); }
       .grid2 { grid-template-columns: 1fr; }
       .feature-grid { grid-template-columns: repeat(2, 1fr); }
@@ -658,7 +697,11 @@
       <div class="nav-top">
         <a class="nav-logo" href="/" aria-label="Back to home">PSU <span>Darpan</span></a>
         <span class="confidential-badge" aria-label="Confidential document">🔒 Confidential · NDA</span>
-        <button class="theme-btn" id="theme-btn" aria-label="Toggle colour theme">☀ Light mode</button>
+        <div class="nav-actions">
+          <button class="dl-btn" id="dl-dark"  title="Download dark-theme PPTX">⬇ Dark PPT</button>
+          <button class="dl-btn" id="dl-light" title="Download light-theme PPTX">⬇ Light PPT</button>
+          <button class="theme-btn" id="theme-btn" aria-label="Toggle colour theme">☀ Light mode</button>
+        </div>
       </div>
       <div class="nav-jumps">
         <span class="nav-label">Jump to:</span>
@@ -899,26 +942,79 @@
 
   </main>
 
+  <!-- PPT export libs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js" defer></script>
+
   <script>
-    (() => {
-      // Jump navigation
-      document.querySelectorAll('.nav-btn[data-target]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const el = document.getElementById(btn.dataset.target);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      });
+    const root     = document.documentElement;
+    const themeBtn = document.getElementById('theme-btn');
 
-      // Theme toggle
-      const themeBtn = document.getElementById('theme-btn');
-      const root     = document.documentElement;
+    // ── Sync button label to restored theme ──
+    themeBtn.textContent = root.dataset.theme === 'dark' ? '☀ Light mode' : '☾ Dark mode';
 
-      themeBtn.addEventListener('click', () => {
-        const isDark       = root.dataset.theme === 'dark';
-        root.dataset.theme = isDark ? 'light' : 'dark';
-        themeBtn.textContent = isDark ? '☾ Dark mode' : '☀ Light mode';
+    // ── Theme toggle (persists to localStorage) ──
+    themeBtn.addEventListener('click', () => {
+      const isDark = root.dataset.theme === 'dark';
+      const next   = isDark ? 'light' : 'dark';
+      root.dataset.theme = next;
+      localStorage.setItem('psu-theme', next);
+      themeBtn.textContent = isDark ? '☾ Dark mode' : '☀ Light mode';
+    });
+
+    // ── Jump nav ──
+    document.querySelectorAll('.nav-btn[data-target]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.getElementById(btn.dataset.target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
-    })();
+    });
+
+    // ── PPT download ──
+    const DECK_NAME = 'Short-Pitch';
+
+    async function downloadPPT(targetTheme) {
+      if (typeof html2canvas === 'undefined' || typeof PptxGenJS === 'undefined') {
+        alert('Libraries still loading — please try again in a moment.');
+        return;
+      }
+      const dlDark  = document.getElementById('dl-dark');
+      const dlLight = document.getElementById('dl-light');
+      const btn     = targetTheme === 'dark' ? dlDark : dlLight;
+      const origTxt = btn.textContent;
+
+      btn.textContent  = '⏳ Building…';
+      dlDark.disabled  = true;
+      dlLight.disabled = true;
+
+      const prev = root.dataset.theme;
+      root.dataset.theme = targetTheme;
+      await new Promise(r => setTimeout(r, 350)); // let CSS transitions settle
+
+      try {
+        const pptx  = new PptxGenJS();
+        pptx.layout = 'LAYOUT_WIDE';
+        pptx.title  = 'PSU Darpan — Short Pitch';
+        pptx.author = 'PSU Darpan';
+        const bg    = targetTheme === 'dark' ? '111827' : 'ffffff';
+
+        for (const el of document.querySelectorAll('.slide')) {
+          const canvas = await html2canvas(el, { scale: 1.5, useCORS: true, logging: false, backgroundColor: null });
+          const s = pptx.addSlide();
+          s.background = { color: bg };
+          s.addImage({ data: canvas.toDataURL('image/jpeg', 0.92), x: 0, y: 0, w: '100%', h: '100%' });
+        }
+
+        await pptx.writeFile({ fileName: `PSU-Darpan-${DECK_NAME}-${targetTheme === 'dark' ? 'Dark' : 'Light'}.pptx` });
+      } finally {
+        root.dataset.theme  = prev;
+        btn.textContent     = origTxt;
+        dlDark.disabled     = false;
+        dlLight.disabled    = false;
+      }
+    }
+
+    document.getElementById('dl-dark') ?.addEventListener('click', () => downloadPPT('dark'));
+    document.getElementById('dl-light')?.addEventListener('click', () => downloadPPT('light'));
   </script>
 </body>
 </html>
